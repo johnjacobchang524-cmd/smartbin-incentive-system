@@ -63,4 +63,4 @@ export {
     deleteUser,
     signInWithPopup,
     GoogleAuthProvider
-};
+}
