@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | SmartBin</title>
+
+    <style>
+
+        .consent-box {
+    max-height: 320px;
+    overflow-y: auto;
+    padding: 18px;
+    border: 1px solid #c8e6c9;
+    border-radius: 10px;
+    background: #f9fff9;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.consent-box h3 {
+    color: #1b5e20;
+    font-size: 16px;
+    margin: 15px 0 6px;
+}
+
+.consent-box h3:first-child {
+    margin-top: 0;
+}
+
+.consent-box p {
+    color: #444;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.consent-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.consent-checkbox input {
+    width: auto;
+    margin: 4px 0 0;
+    flex-shrink: 0;
+}
+
+[hidden] {
+    display: none !important;
+}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #e8f5e9;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1b5e20;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2e7d32;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1b5e20;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 18px;
+            line-height: 1.6;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #2e7d32;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+<!-- CONSENT FORM SCREEN -->
+<div id="consentScreen">
+
+    <div class="logo">♻️</div>
+
+    <h1>Research Consent Form</h1>
+
+    <p class="subtitle">
+        Please read the information below before registering
+        for the SmartBin research project.
+    </p>
+
+    <div class="consent-box">
+
+        <h3>Research Title</h3>
+        <p>
+            Development of a Semi-Automated RFID-Enabled Smart Trash Bin
+            for Promoting Proper Plastic and Paper Waste Disposal
+            with an Incentive Points System.
+        </p>
+
+        <h3>Purpose of the Study</h3>
+        <p>
+            This study evaluates a SmartBin system designed to encourage
+            proper plastic and paper waste disposal through an incentive
+            points mechanism.
+        </p>
+
+        <h3>Information Collected</h3>
+        <p>
+            The system may collect your full name, Gmail address,
+            student ID, disposal records, and incentive points.
+        </p>
+
+        <h3>Voluntary Participation</h3>
+        <p>
+            Participation is voluntary. Choosing not to participate
+            will not affect your grades or your relationship with
+            your classmates.
+        </p>
+
+        <h3>Privacy and Confidentiality</h3>
+        <p>
+            The researchers will take reasonable measures to protect
+            your personal information and use it for the purposes
+            explained in this consent form.
+        </p>
+
+        <h3>Questions and Concerns</h3>
+        <p>
+            You may ask the research team or research adviser questions
+            before deciding whether to participate.
+        </p>
+
+    </div>
+
+    <label class="consent-checkbox">
+        <input type="checkbox" id="consentCheckbox">
+
+        I have read and understood the information above, and I
+        voluntarily agree to participate in this research.
+    </label>
+
+    <button type="button" id="agreeButton">
+        I Agree — Continue to Registration
+    </button>
+
+    <button
+        type="button"
+        id="declineButton"
+        style="background:#c62828; margin-top:10px;"
+    >
+        I Do Not Agree
+    </button>
+
+    <p id="consentMessage" role="status" aria-live="polite"></p>
+
+</div>
+
+        <div class="logo">♻️</div>
+
+        <h1>Student Registration</h1>
+
+        <p class="subtitle">
+            Join the SmartBin Trash Bin Incentive System.
+            Submit your information for administrator approval.
+        </p>
+
+        <form id="registrationForm" hidden>
+
+            <label for="fullName">Full Name</label>
+            <input
+                type="text"
+                id="fullName"
+                placeholder="Enter your complete name"
+                autocomplete="name"
+                maxlength="100"
+                required
+            >
+
+            <label for="email">Gmail Address</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="example@gmail.com"
+                autocomplete="email"
+                maxlength="254"
+                required
+            >
+<label for="password">Create Password</label>
+<input
+    type="password"
+    id="password"
+    placeholder="Create a password"
+    autocomplete="new-password"
+    minlength="8"
+    required
+>
+
+<label for="confirmPassword">Confirm Password</label>
+<input
+    type="password"
+    id="confirmPassword"
+    placeholder="Re-enter your password"
+    autocomplete="new-password"
+    minlength="8"
+    required
+>
+            <button type="submit" id="submitButton">
+                Submit Registration
+            </button>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </form>
+
+        <a href="index.html" class="back-link">
+            ← Back to Home
+        </a>
+
+    </div>
+
+    <script type="module">
+    import {
+        db,
+        auth,
+        collection,
+        addDoc,
+        serverTimestamp,
+        createUserWithEmailAndPassword,
+        signOut,
+        deleteUser
+    } from "./firebase.js";
+
+    // Consent screen elements
+    const consentScreen = document.getElementById("consentScreen");
+    const consentCheckbox = document.getElementById("consentCheckbox");
+    const agreeButton = document.getElementById("agreeButton");
+    const declineButton = document.getElementById("declineButton");
+    const consentMessage = document.getElementById("consentMessage");
+
+    // Registration form elements
+    const form = document.getElementById("registrationForm");
+    const message = document.getElementById("message");
+    const submitButton = document.getElementById("submitButton");
+
+    // Show the registration form only after consent
+    agreeButton.addEventListener("click", () => {
+        if (!consentCheckbox.checked) {
+            consentMessage.style.color = "#c62828";
+            consentMessage.textContent =
+                "Please read and agree to the consent form before continuing.";
+            return;
+        }
+
+        consentScreen.hidden = true;
+        form.hidden = false;
+    });
+
+    // Declining consent prevents registration
+    declineButton.addEventListener("click", () => {
+        consentMessage.style.color = "#c62828";
+        consentMessage.textContent =
+            "You have chosen not to participate. You cannot continue to registration.";
+    });
+
+    // Submit registration
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const fullName = document
+            .getElementById("fullName")
+            .value.trim();
+
+        const email = document
+            .getElementById("email")
+            .value.trim()
+            .toLowerCase();
+
+        const password = document
+            .getElementById("password")
+            .value;
+
+        const confirmPassword = document
+            .getElementById("confirmPassword")
+            .value;
+
+        // Validate name
+        if (fullName.length < 2 || fullName.length > 100) {
+            message.style.color = "#c62828";
+            message.textContent =
+                "Please enter your complete name (2–100 characters).";
+            return;
+        }
+
+        // Validate Gmail address
+        if (!/^[A-Za-z0-9._%+-]+@gmail\.com$/i.test(email)) {
+            message.style.color = "#c62828";
+            message.textContent =
+                "Please use a valid Gmail address ending in @gmail.com.";
+            return;
+        }
+
+        // Validate password length
+        if (password.length < 8) {
+            message.style.color = "#c62828";
+            message.textContent =
+                "Your password must contain at least 8 characters.";
+            return;
+        }
+
+        // Confirm passwords match
+        if (password !== confirmPassword) {
+            message.style.color = "#c62828";
+            message.textContent =
+                "The passwords do not match. Please try again.";
+            return;
+        }
+
+       // Sign out any existing user before creating a new account
+if (auth.currentUser) {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        console.error("Sign-out error:", error);
+        message.style.color = "#c62828";
+        message.textContent =
+            "Unable to sign out. Please refresh the page and try again.";
+        return;
+    }
+}
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Creating account...";
+        message.textContent = "";
+
+        let createdUser = null;
+        let applicationSubmitted = false;
+
+        try {
+            // 1. Create the student's Firebase Authentication account
+            const userCredential =
+                await createUserWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+            createdUser = userCredential.user;
+
+            // 2. Submit the application with the authenticated user's UID
+            await addDoc(
+                collection(db, "PENDING_REGISTRATIONS"),
+                {
+                    fullName,
+                    email,
+                    authUid: createdUser.uid,
+                    status: "PENDING",
+                    submittedAt: serverTimestamp(),
+
+                    // Research consent information
+                    consentGiven: true,
+                    consentVersion: "1.0",
+                    consentAt: serverTimestamp()
+                }
+            );
+
+            applicationSubmitted = true;
+
+            // 3. Sign out so the pending student is not left signed in
+            await signOut(auth);
+
+            message.style.color = "#2e7d32";
+            message.textContent =
+                "Registration submitted successfully! Your account has been created, " +
+                "but you must wait for administrator approval before accessing your student dashboard.";
+
+            form.reset();
+
+        } catch (error) {
+            console.error("Registration error:", error);
+
+            // If account creation succeeded but submission failed,
+            // try to remove the newly created account.
+            if (createdUser && !applicationSubmitted) {
+                try {
+                    if (auth.currentUser &&
+                        auth.currentUser.uid === createdUser.uid) {
+                        await deleteUser(createdUser);
+                    }
+
+                    if (auth.currentUser) {
+                        await signOut(auth);
+                    }
+
+                    message.style.color = "#c62828";
+                    message.textContent =
+                        "Registration could not be completed. " +
+                        "Please check your connection and try again. " +
+                        "If the problem continues, contact the administrator.";
+
+                } catch (cleanupError) {
+                    console.error(
+                        "Account cleanup error:",
+                        cleanupError
+                    );
+
+                    message.style.color = "#c62828";
+                    message.textContent =
+                        "Your account may have been created, but your application " +
+                        "could not be submitted. Do not register again using the same " +
+                        "Gmail address. Please contact the administrator.";
+                }
+
+            } else if (applicationSubmitted) {
+                message.style.color = "#2e7d32";
+                message.textContent =
+                    "Your application was submitted, but automatic sign-out failed. " +
+                    "Please sign out manually.";
+
+            } else {
+                // Handle errors before an account was created
+                if (error.code === "auth/email-already-in-use") {
+                    message.textContent =
+                        "This Gmail address already has an account. Please use another address or sign in.";
+                } else if (error.code === "auth/invalid-email") {
+                    message.textContent =
+                        "Please enter a valid Gmail address.";
+                } else if (error.code === "auth/weak-password") {
+                    message.textContent =
+                        "Your password is too weak. Please use at least 8 characters.";
+                } else {
+                    message.textContent =
+                        "We couldn't complete your registration. " +
+                        "Please try again later or contact the administrator.";
+                }
+
+                message.style.color = "#c62828";
+            }
+
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Submit Registration";
+        }
+    });
+</script>
+
+</body>
+</html>

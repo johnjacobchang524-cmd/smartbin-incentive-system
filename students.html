@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBin - Students</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f3f7f4;
+      color: #24352b;
+    }
+
+    header {
+      background: #176b4a;
+      color: white;
+      padding: 20px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    header h2 {
+      font-size: 24px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 35px auto;
+      padding: 0 20px;
+    }
+
+    .heading {
+      margin-bottom: 25px;
+    }
+
+    .heading h1 {
+      color: #176b4a;
+      margin-bottom: 8px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .card h3 {
+      color: #176b4a;
+      margin-bottom: 12px;
+    }
+
+    .number {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 12px;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+
+    input {
+      border: 1px solid #ccd8cf;
+      background: white;
+    }
+
+    #search {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    button {
+      border: none;
+      background: #176b4a;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #105338;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #e5ece7;
+    }
+
+    th {
+      background: #e5f2e9;
+      color: #176b4a;
+    }
+
+    .notice {
+      color: #68776c;
+      font-size: 14px;
+      margin-top: 18px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 18px;
+      }
+
+      nav a {
+        margin-left: 0;
+        margin-right: 14px;
+      }
+
+      main {
+        margin-top: 25px;
+        padding: 0 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h2>♻ SmartBin</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="students.html">Students</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="heading">
+      <h1>Student Management</h1>
+      <p>Monitor student accounts and their incentive points.</p>
+    </section>
+
+    <section class="summary">
+      <div class="card">
+        <h3>Total Students</h3>
+        <div class="number">55</div>
+      </div>
+
+      <div class="card">
+        <h3>Total Points</h3>
+        <div class="number" id="totalPoints">0</div>
+      </div>
+
+      <div class="card">
+        <h3>Total Disposals</h3>
+        <div class="number" id="totalDisposals">0</div>
+      </div>
+    </section>
+
+    <section class="tools">
+      <input
+        id="search"
+        type="text"
+        placeholder="Search by student ID or name..."
+      >
+      <button onclick="exportCSV()">Export CSV</button>
+    </section>
+
+    <section class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Points</th>
+            <th>Plastic</th>
+            <th>Paper</th>
+            <th>Total Disposals</th>
+          </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+      </table>
+    </section>
+
+    <!-- SMARTBIN STUDENT LEADERBOARD -->
+<section class="table-wrap">
+  <h2>🏆 Student Leaderboard</h2>
+  <p>Students are ranked by total incentive points.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Student ID</th>
+        <th>Student Name</th>
+        <th>Total Points</th>
+        <th>Plastic Disposals</th>
+        <th>Paper Disposals</th>
+      </tr>
+    </thead>
+
+    <tbody id="leaderboardTable">
+      <tr>
+        <td colspan="6">Loading leaderboard...</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+    <p class="notice">
+      This page currently displays sample student accounts.
+      Firebase connection is the next step. The 55 student accounts
+      and their actual points will need to be loaded from your database.
+    </p>
+  </main>
+
+  <script type="module">
+  import {
+    db,
+    collection,
+    getDocs
+  } from "./firebase.js";
+
+  let students = [];
+
+  async function loadStudents() {
+    const table = document.getElementById("studentTable");
+
+    table.innerHTML = `
+      <tr><td colspan="6">Loading student records...</td></tr>
+    `;
+
+    try {
+      const studentSnapshot = await getDocs(
+        collection(db, "STUDENTS")
+      );
+
+      const disposalSnapshot = await getDocs(
+        collection(db, "DISPOSAL_HISTORY")
+      );
+
+      const disposalCounts = {};
+
+      disposalSnapshot.forEach((document) => {
+        const disposal = document.data();
+        const id = disposal.studentId;
+
+        if (!id) return;
+
+        if (!disposalCounts[id]) {
+          disposalCounts[id] = {
+            plasticCount: 0,
+            paperCount: 0
+          };
+        }
+
+        const type = String(
+          disposal.wasteType || ""
+        ).toUpperCase();
+
+        if (type === "PLASTIC") {
+          disposalCounts[id].plasticCount++;
+        }
+
+        if (type === "PAPER") {
+          disposalCounts[id].paperCount++;
+        }
+      });
+
+      students = studentSnapshot.docs.map((document) => {
+        const data = document.data();
+
+        const counts = disposalCounts[document.id] || {
+          plasticCount: 0,
+          paperCount: 0
+        };
+
+        return {
+          id: data.studentId || document.id,
+          name: data.name || "Name not available",
+          points: Number(data.points || 0),
+          plasticCount: Number(data.plasticCount ?? counts.plasticCount),
+          paperCount: Number(data.paperCount ?? counts.paperCount)
+        };
+      });
+
+      displayStudents(students);
+
+      document.querySelector(
+        ".summary .card:first-child .number"
+      ).textContent = students.length;
+
+      document.querySelector(".notice").textContent =
+        "Student records are loaded from Firebase Firestore.";
+
+    } catch (error) {
+      console.error("Error loading Firebase records:", error);
+
+      table.innerHTML = `
+        <tr>
+          <td colspan="6">
+            Unable to load records. Check the browser console
+            and your Firestore security rules.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  function displayStudents(list) {
+    const table = document.getElementById("studentTable");
+
+    table.innerHTML = list.map((student) => `
+      <tr>
+        <td>${student.id}</td>
+        <td>${student.name}</td>
+        <td>${student.points}</td>
+        <td>${student.plasticCount}</td>
+        <td>${student.paperCount}</td>
+        <td>${student.plasticCount + student.paperCount}</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("totalPoints").textContent =
+      students.reduce((sum, s) => sum + s.points, 0);
+
+    document.getElementById("totalDisposals").textContent =
+      students.reduce(
+        (sum, s) => sum + s.plasticCount + s.paperCount,
+        0
+      );
+  }
+
+  document.getElementById("search").addEventListener(
+    "input",
+    function () {
+      const query = this.value.toLowerCase();
+
+      const filtered = students.filter((student) =>
+        student.id.toLowerCase().includes(query) ||
+        student.name.toLowerCase().includes(query)
+      );
+
+      displayStudents(filtered);
+    }
+  );
+
+  function exportCSV() {
+    const header = [
+      "Student ID",
+      "Student Name",
+      "Points",
+      "Plastic Disposals",
+      "Paper Disposals",
+      "Total Disposals"
+    ];
+
+    const rows = students.map((s) => [
+      s.id,
+      `"${s.name.replace(/"/g, '""')}"`,
+      s.points,
+      s.plasticCount,
+      s.paperCount,
+      s.plasticCount + s.paperCount
+    ]);
+
+    const csv = [header, ...rows]
+      .map((row) => row.join(","))
+      .join("\n");
+
+    const blob = new Blob([csv], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "smartbin-students.csv";
+    link.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  window.exportCSV = exportCSV;
+
+  loadStudents();
+</script>
+</body>
+</html>

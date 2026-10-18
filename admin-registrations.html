@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Approval | SmartBin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f1f7f1;
+      color: #26352a;
+    }
+
+    header {
+      background: #176b35;
+      color: white;
+      padding: 22px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 25px;
+    }
+
+    header p {
+      margin: 6px 0 0;
+      color: #e2f4e6;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .header-links a,
+    .header-links button {
+      background: white;
+      color: #176b35;
+      border: none;
+      border-radius: 7px;
+      padding: 10px 14px;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .summary-card {
+      background: white;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #0000000d;
+    }
+
+    .summary-card h3 {
+      margin: 0 0 12px;
+      color: #526357;
+      font-size: 15px;
+    }
+
+    .summary-card strong {
+      font-size: 30px;
+      color: #176b35;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 3px 12px #0000000d;
+      margin-bottom: 24px;
+    }
+
+    .panel h2 {
+      margin-top: 0;
+    }
+
+    .notice {
+      padding: 14px;
+      background: #fff7df;
+      border-left: 4px solid #e4ae26;
+      border-radius: 5px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    .message.error {
+      display: block;
+      background: #ffe7e7;
+      color: #9b1c1c;
+    }
+
+    .message.success {
+      display: block;
+      background: #e4f7e9;
+      color: #176b35;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    input,
+    select {
+      padding: 11px 12px;
+      border: 1px solid #cbd5cc;
+      border-radius: 7px;
+      font-size: 15px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    select {
+      min-width: 150px;
+    }
+
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid #e4eae5;
+      vertical-align: top;
+    }
+
+    th {
+      background: #edf6ee;
+      color: #244d30;
+    }
+
+    td {
+      line-height: 1.5;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      background: #fff0c7;
+      color: #795800;
+    }
+
+    .status.approved {
+      background: #dff5e5;
+      color: #176b35;
+    }
+
+    .status.rejected {
+      background: #ffe2e2;
+      color: #9b1c1c;
+    }
+
+    .action-button {
+      display: inline-block;
+      margin: 3px 3px 3px 0;
+      padding: 9px 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .match-button {
+      background: #e5efff;
+      color: #174c91;
+    }
+
+    .approve-button {
+      background: #237b3d;
+      color: white;
+    }
+
+    .reject-button {
+      background: #b52a2a;
+      color: white;
+    }
+
+    .action-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .match-result {
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 6px;
+      background: #f2f5f2;
+      min-width: 220px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 30px;
+      color: #69766c;
+    }
+
+    .small-note {
+      font-size: 13px;
+      color: #68766b;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 18px;
+      }
+
+      main {
+        padding: 0 12px;
+      }
+
+      .panel {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>♻️ SmartBin Admin</h1>
+    <p>Student Registration Approval</p>
+  </div>
+
+  <div class="header-links">
+    <a href="students.html">Student Records</a>
+    <button id="refreshButton" type="button">Refresh</button>
+    <button id="logoutButton" type="button">Log Out</button>
+  </div>
+</header>
+
+<section class="panel">
+  <h2>Approved Students</h2>
+  <p>Students with approved accounts linked to their student records.</p>
+
+  <div class="toolbar">
+    <input
+      type="search"
+      id="approvedSearch"
+      placeholder="Search approved students..."
+    >
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Student Name</th>
+          <th>Gmail Address</th>
+          <th>Total Points</th>
+          <th>Plastic Disposals</th>
+          <th>Paper Disposals</th>
+        </tr>
+      </thead>
+
+      <tbody id="approvedStudentsTable">
+        <tr>
+          <td colspan="6" class="empty">
+            Loading approved students...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<main>
+
+  <div id="pageMessage" class="message"></div>
+
+  <div class="notice">
+    <strong>Important:</strong> Match each applicant to an existing student
+    record and verify their identity before approving them. Matching names
+    alone is not proof of identity. Approval here changes the application
+    status only; it does not create a login account or link a Student ID.
+  </div>
+
+  <section class="summary">
+    <div class="summary-card">
+      <h3>Pending Applications</h3>
+      <strong id="pendingCount">—</strong>
+    </div>
+
+    <div class="summary-card">
+      <h3>Approved Applications</h3>
+      <strong id="approvedCount">—</strong>
+    </div>
+
+    <div class="summary-card">
+      <h3>Rejected Applications</h3>
+      <strong id="rejectedCount">—</strong>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Registration Applications</h2>
+    <p>Review submitted student information below.</p>
+
+    <div class="toolbar">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="Search by name or Gmail address"
+      >
+
+      <select id="statusFilter">
+        <option value="ALL">All Applications</option>
+        <option value="PENDING">Pending</option>
+        <option value="APPROVED">Approved</option>
+        <option value="REJECTED">Rejected</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Applicant</th>
+            <th>Gmail Address</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th>Student Record Matching</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="applicationsTable">
+          <tr>
+            <td colspan="7" class="empty">Loading applications...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<script type="module">
+ import {
+    db,
+    auth,
+    collection,
+    getDocs,
+    doc,
+    getDoc,
+    updateDoc,
+    query,
+    where,
+    onAuthStateChanged,
+    signOut,
+    writeBatch,
+    serverTimestamp
+} from "./firebase.js";
+
+  const ADMIN_UID = "ZuAlxDu4n3eUzVCPacqj6t1tgZW2";
+
+  const applicationsTable = document.getElementById("applicationsTable");
+  const pageMessage = document.getElementById("pageMessage");
+
+  let applications = [];
+  let students = [];
+  let pageReady = false;
+
+  function showMessage(message, type = "error") {
+    pageMessage.textContent = message;
+    pageMessage.className = "message " + type;
+  }
+
+  function clearMessage() {
+    pageMessage.textContent = "";
+    pageMessage.className = "message";
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[character]);
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp || typeof timestamp.toDate !== "function") {
+      return "Not available";
+    }
+
+    return timestamp.toDate().toLocaleString();
+  }
+
+  function normalizeName(value) {
+    return String(value ?? "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+  }
+
+  function findPossibleMatches(fullName) {
+    const target = normalizeName(fullName);
+
+    return students.filter(student => {
+      const names = [
+        student.name,
+        student.fullName,
+        student.studentName
+      ];
+
+      return names.some(name => normalizeName(name) === target);
+    });
+  }
+
+  function updateSummary() {
+    document.getElementById("pendingCount").textContent =
+      applications.filter(app => app.status === "PENDING").length;
+
+    document.getElementById("approvedCount").textContent =
+      applications.filter(app => app.status === "APPROVED").length;
+
+    document.getElementById("rejectedCount").textContent =
+      applications.filter(app => app.status === "REJECTED").length;
+  }
+
+  function renderApplications() {
+    const search = document.getElementById("searchInput")
+      .value.trim().toLowerCase();
+
+    const status = document.getElementById("statusFilter").value;
+
+    const filtered = applications.filter(app => {
+      const matchesSearch =
+        String(app.fullName ?? "").toLowerCase().includes(search) ||
+        String(app.email ?? "").toLowerCase().includes(search);
+
+      const matchesStatus = status === "ALL" || app.status === status;
+
+      return matchesSearch && matchesStatus;
+    });
+
+    if (filtered.length === 0) {
+      applicationsTable.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty">
+            No applications found.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    applicationsTable.innerHTML = filtered.map(app => {
+      const matches = findPossibleMatches(app.fullName);
+
+      let matchHTML = `
+  <div class="match-result">
+    <label for="studentMatch-${escapeHTML(app.id)}">
+      Select Student Record:
+    </label>
+
+    <select
+      id="studentMatch-${escapeHTML(app.id)}"
+      class="student-match-select"
+      data-id="${escapeHTML(app.id)}"
+    >
+      <option value="">Choose a student</option>
+
+      ${students.map(student => {
+        const studentName =
+          student.name || student.fullName || student.studentName || "";
+
+        const selected =
+          app.matchedStudentId === student.id ? "selected" : "";
+
+        return `
+          <option value="${escapeHTML(student.id)}" ${selected}>
+            ${escapeHTML(student.id)} — ${escapeHTML(studentName)}
+          </option>
+        `;
+      }).join("")}
+    </select>
+
+    <button
+      type="button"
+      class="action-button match-button"
+      data-action="save-match"
+      data-id="${escapeHTML(app.id)}"
+    >
+      Save Student Match
+    </button>
+
+    <div class="small-note">
+      Current match:
+      ${escapeHTML(app.matchedStudentId || "Not matched")}
+    </div>
+  </div>
+`;
+
+      const selectedStudentId = app.matchedStudentId || "";
+
+      let actions = `
+        <button
+          class="action-button match-button"
+          data-action="match"
+          data-id="${escapeHTML(app.id)}"
+        >
+          Check Match
+        </button>
+      `;
+
+      if (app.status === "PENDING") {
+        actions += `
+          <button
+            class="action-button approve-button"
+            data-action="approve"
+            data-id="${escapeHTML(app.id)}"
+          >
+            Approve
+          </button>
+
+          <button
+            class="action-button reject-button"
+            data-action="reject"
+            data-id="${escapeHTML(app.id)}"
+          >
+            Reject
+          </button>
+        `;
+      }
+
+const statusClass = (app.status || "PENDING").toLowerCase();
+
+// Research consent information
+const consentStatus = app.consentGiven === true
+  ? "Agreed"
+  : "Not Recorded";
+
+const consentVersion = app.consentVersion || "Not recorded";
+
+const consentTimestamp = app.consentAt
+  ? formatDate(app.consentAt)
+  : "Not recorded";
+
+return `
+  <tr>
+    <td>${escapeHTML(app.fullName)}</td>
+    <td>${escapeHTML(app.email)}</td>
+    <td>${escapeHTML(formatDate(app.submittedAt))}</td>
+
+    <td>
+      <span class="status ${escapeHTML(statusClass)}">
+        ${escapeHTML(app.status)}
+      </span>
+    </td>
+
+    <td>
+      <div class="consent-details">
+        <strong>Consent:</strong>
+        ${escapeHTML(consentStatus)}
+        <br>
+
+        <strong>Form Version:</strong>
+        ${escapeHTML(consentVersion)}
+        <br>
+
+        <strong>Recorded:</strong>
+        ${escapeHTML(consentTimestamp)}
+      </div>
+    </td>
+
+    <td>${matchHTML}</td>
+    <td>${actions}</td>
+  </tr>
+`;
+      return `
+        <tr>
+          <td>${escapeHTML(app.fullName)}</td>
+          <td>${escapeHTML(app.email)}</td>
+          <td>${escapeHTML(formatDate(app.submittedAt))}</td>
+          <td>
+            <span class="status ${escapeHTML(statusClass)}">
+              ${escapeHTML(app.status)}
+            </span>
+          </td>
+          <td>${matchHTML}</td>
+          <td>${actions}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function loadApplications() {
+    clearMessage();
+
+    applicationsTable.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty">Loading applications...</td>
+      </tr>
+    `;
+
+    try {
+      const [applicationSnapshot, studentSnapshot] = await Promise.all([
+        getDocs(collection(db, "PENDING_REGISTRATIONS")),
+        getDocs(collection(db, "STUDENTS"))
+      ]);
+
+      applications = applicationSnapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
+
+      students = studentSnapshot.docs.map(item => ({
+        id: item.id,
+        ...item.data()
+      }));
+
+      applications.sort((a, b) => {
+        const timeA = a.submittedAt?.toMillis?.() ?? 0;
+        const timeB = b.submittedAt?.toMillis?.() ?? 0;
+        return timeB - timeA;
+      });
+
+      updateSummary();
+      renderApplications();
+      renderApprovedStudents();    
+    } catch (error) {
+      console.error(error);
+
+      showMessage(
+        "Unable to load applications.\n\n" +
+        "Check that you are signed in as the administrator and that " +
+        "your Firestore rules allow the admin account to read " +
+        "PENDING_REGISTRATIONS and STUDENTS.\n\n" +
+        "Error: " + error.message
+      );
+
+      applicationsTable.innerHTML = `
+        <tr>
+          <td colspan="7" class="empty">
+            Could not load applications.
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  async function changeStatus(applicationId, newStatus) {
+    const app = applications.find(item => item.id === applicationId);
+
+    // Check that the application exists and is still pending.
+    if (!app || app.status !== "PENDING") {
+        showMessage(
+            "This application is no longer pending. Please refresh the page."
+        );
+        return;
+    }
+
+    // Only allow approval or rejection.
+    if (!["APPROVED", "REJECTED"].includes(newStatus)) {
+        showMessage("Invalid application status.");
+        return;
+    }
+
+    // Approval requires a matched Student ID.
+    if (newStatus === "APPROVED" && !app.matchedStudentId) {
+        showMessage(
+            "Please select and save a Student ID before approving this application."
+        );
+        return;
+    }
+
+    const actionText =
+        newStatus === "APPROVED" ? "approve" : "reject";
+
+    const confirmed = confirm(
+        `Are you sure you want to ${actionText} the application for ` +
+        `${app.fullName} (${app.email})?`
+    );
+
+    if (!confirmed) return;
+
+    try {
+        const applicationRef = doc(
+            db,
+            "PENDING_REGISTRATIONS",
+            applicationId
+        );
+
+        // Retrieve the latest application record.
+        const latestSnapshot = await getDoc(applicationRef);
+
+        if (!latestSnapshot.exists()) {
+            throw new Error("This application no longer exists.");
+        }
+
+        const latestApplication = latestSnapshot.data();
+
+        if (latestApplication.status !== "PENDING") {
+            throw new Error(
+                "This application has already been reviewed. Refresh the page."
+            );
+        }
+
+        // Prepare the application update.
+        const applicationUpdates = {
+            status: newStatus,
+            reviewedAt: serverTimestamp(),
+            reviewedBy: auth.currentUser.uid
+        };
+
+        // If rejecting, update only the application status.
+        if (newStatus === "REJECTED") {
+            await updateDoc(applicationRef, applicationUpdates);
+
+            showMessage(
+                "Application rejected successfully.",
+                "success"
+            );
+
+            await loadApplications();
+            return;
+        }
+
+        // Approval: verify the selected Student ID.
+        const studentId = latestApplication.matchedStudentId;
+
+        if (!studentId) {
+            throw new Error(
+                "No Student ID has been saved. Select and save a Student ID first."
+            );
+        }
+
+        const studentRef = doc(db, "STUDENTS", studentId);
+        const studentSnapshot = await getDoc(studentRef);
+
+        if (!studentSnapshot.exists()) {
+            throw new Error(
+                "The selected Student ID does not exist. Please select a valid Student ID."
+            );
+        }
+
+        const student = studentSnapshot.data();
+
+        // Prevent linking a Student ID that belongs to another account.
+        if (student.authUid && student.authUid !== latestApplication.authUid) {
+            throw new Error(
+                "This Student ID is already linked to another account. Please select the correct Student ID."
+            );
+        }
+
+        // Make sure the application belongs to the authenticated applicant.
+        if (!latestApplication.authUid || !latestApplication.email) {
+            throw new Error(
+                "The application is missing account information."
+            );
+        }
+
+        // Link the account and approve the application together.
+        const batch = writeBatch(db);
+
+        batch.update(studentRef, {
+            authUid: latestApplication.authUid,
+            email: latestApplication.email
+        });
+
+        batch.update(applicationRef, {
+            ...applicationUpdates,
+            matchedStudentId: studentId
+        });
+
+        await batch.commit();
+
+        showMessage(
+            `Application approved successfully!\n\n` +
+            `Student ID: ${studentId}\n` +
+            `Name: ${student.fullName || student.name || studentId}\n\n` +
+            "The student account has been linked to this Student ID.",
+            "success"
+        );
+
+        await loadApplications();
+
+    } catch (error) {
+        console.error("Application review error:", error);
+
+        showMessage(
+            "Could not complete the application review.\n\n" +
+            error.message
+        );
+    }
+}
+
+ applicationsTable.addEventListener("click", async event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+
+  const applicationId = button.dataset.id;
+  const action = button.dataset.action;
+
+  const app = applications.find(item => item.id === applicationId);
+  if (!app) {
+    alert("Application not found. Please refresh the page.");
+    return;
+  }
+
+  if (action === "approve") {
+    await changeStatus(applicationId, "APPROVED");
+
+  } else if (action === "reject") {
+    await changeStatus(applicationId, "REJECTED");
+
+  } else if (action === "match") {
+    const matches = findPossibleMatches(app.fullName);
+
+    if (matches.length === 1) {
+      alert(
+        "Possible matching student record:\n\n" +
+        "Student ID: " + matches[0].id + "\n" +
+        "Name: " + (matches[0].name || matches[0].fullName || "") +
+        "\n\nVerify the student's identity before approval."
+      );
+    } else if (matches.length === 0) {
+      alert(
+        "No exact name match was found. Check the official student " +
+        "records manually before taking action."
+      );
+    } else {
+      alert(
+        "Multiple possible matches were found:\n\n" +
+        matches.map(student =>
+          student.id + " — " +
+          (student.name || student.fullName || "")
+        ).join("\n") +
+        "\n\nVerify the correct student manually."
+      );
+    }
+
+  } else if (action === "save-match") {
+    const select = document.getElementById(
+      `studentMatch-${applicationId}`
+    );
+
+    if (!select || !select.value) {
+      alert("Please select a student record first.");
+      return;
+    }
+
+    const selectedStudentId = select.value;
+
+    try {
+      // Get the latest application record.
+      const applicationRef = doc(
+        db,
+        "PENDING_REGISTRATIONS",
+        applicationId
+      );
+
+      const applicationSnapshot = await getDoc(applicationRef);
+
+      if (!applicationSnapshot.exists()) {
+        throw new Error("The application could not be found.");
+      }
+
+      const applicationData = applicationSnapshot.data();
+
+      if (applicationData.status !== "PENDING") {
+        throw new Error(
+          "This application has already been reviewed. Refresh the page."
+        );
+      }
+
+      // Get the selected student record.
+      const studentRef = doc(db, "STUDENTS", selectedStudentId);
+      const studentSnapshot = await getDoc(studentRef);
+
+      if (!studentSnapshot.exists()) {
+        throw new Error(
+          "The selected student record could not be found."
+        );
+      }
+
+      const studentData = studentSnapshot.data();
+
+      // Prevent matching a student already linked to another account.
+      if (
+        studentData.authUid &&
+        studentData.authUid !== applicationData.authUid
+      ) {
+        throw new Error(
+          "This Student ID is already linked to another account. Please select another student."
+        );
+      }
+
+      // Save the match without linking the account yet.
+      await updateDoc(applicationRef, {
+        matchedStudentId: selectedStudentId
+      });
+
+      app.matchedStudentId = selectedStudentId;
+
+      alert(
+        `Student match saved successfully!\n\n` +
+        `Student ID: ${selectedStudentId}\n` +
+        `Student: ${studentData.fullName || studentData.name || selectedStudentId}\n\n` +
+        "The account will be linked when you approve the application."
+      );
+
+      await loadApplications();
+
+    } catch (error) {
+      console.error("Error saving student match:", error);
+
+      alert(
+        "Unable to save student match.\n\n" + error.message
+      );
+    }
+  }
+});
+
+  document.getElementById("searchInput")
+    .addEventListener("input", renderApplications);
+
+  document.getElementById("statusFilter")
+    .addEventListener("change", renderApplications);
+
+  document.getElementById("refreshButton")
+    .addEventListener("click", loadApplications);
+
+  document.getElementById("logoutButton")
+    .addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "admin-login.html";
+    });
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.location.replace("admin-login.html");
+      return;
+    }
+
+    if (user.uid !== ADMIN_UID) {
+      await signOut(auth);
+      window.location.replace("admin-login.html");
+      return;
+    }
+
+    if (!pageReady) {
+      pageReady = true;
+      await loadApplications();
+    }
+  });
+
+  function renderApprovedStudents() {
+  const table = document.getElementById("approvedStudentsTable");
+  const searchInput = document.getElementById("approvedSearch");
+
+  if (!table) return;
+
+  const search = (searchInput?.value || "").toLowerCase();
+
+  const approvedStudents = students.filter(student => {
+    const data = student || {};   
+ // An approved account must be linked to a login account.
+    return Boolean(data.authUid && data.email);
+  });
+
+  const filteredStudents = approvedStudents.filter(student => {
+    const data = student || {};
+    const searchableText = [
+      student.id,
+      data.name,
+      data.fullName,
+      data.studentName,
+      data.email
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    return searchableText.includes(search);
+  });
+
+  if (filteredStudents.length === 0) {
+    table.innerHTML = `
+      <tr>
+        <td colspan="6" class="empty">
+          No approved students found.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  table.innerHTML = filteredStudents.map(student => {
+    const data = student || {};
+    return `
+      <tr>
+        <td>${escapeHTML(student.id)}</td>
+        <td>${escapeHTML(
+          data.name || data.fullName || data.studentName || "N/A"
+        )}</td>
+        <td>${escapeHTML(data.email || "N/A")}</td>
+        <td>${Number(data.points || 0)}</td>
+        <td>${Number(data.plasticCount || 0)}</td>
+        <td>${Number(data.paperCount || 0)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+document.getElementById("approvedSearch")?.addEventListener(
+  "input",
+  renderApprovedStudents
+);
+</script>
+
+
+</body>
+</html>
