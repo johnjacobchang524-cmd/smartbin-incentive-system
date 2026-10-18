@@ -89,6 +89,20 @@
             background: #1b5e20;
         }
 
+        #googleLoginButton {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin-top: 12px;
+    background: white !important;
+    color: #333 !important;
+    border: 1px solid #ccc !important;
+}
+
+#googleLoginButton:hover {
+    background: #f5f5f5 !important;
+}
+
         button:disabled {
             background: #9e9e9e;
             cursor: not-allowed;
@@ -144,6 +158,18 @@
             >
 
             <button type="submit" id="loginButton">Log In</button>
+<button type="button" id="googleLoginButton" 
+    style="
+    margin-top: 12px;
+    background: white;
+    color: #333;
+    border: 1px solid #ccc;
+">
+    Continue with Google
+</button>
+
+<div style="text-align:center; margin:18px 0; color:#777;">
+</div>
 
             <p id="message" role="status" aria-live="polite"></p>
         </form>
@@ -153,21 +179,99 @@
 
     <script type="module">
     import {
-        auth,
-        db,
-        collection,
-        getDocs,
-        query,
-        where,
-        signInWithEmailAndPassword,
-        signOut
-    } from "./firebase.js";
+    auth,
+    db,
+    collection,
+    getDocs,
+    query,
+    where,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    GoogleAuthProvider,
+    signOut
+} from "./firebase.js";
 
     const form = document.getElementById("studentLoginForm");
     const studentIdInput = document.getElementById("studentId");
     const passwordInput = document.getElementById("password");
     const loginButton = document.getElementById("loginButton");
     const message = document.getElementById("message");
+    const googleLoginButton = document.getElementById("googleLoginButton");
+
+googleLoginButton.addEventListener("click", async () => {
+    message.textContent = "";
+    message.style.color = "#c62828";
+
+    googleLoginButton.disabled = true;
+    googleLoginButton.textContent = "Connecting to Google...";
+
+    try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({
+            prompt: "select_account"
+        });
+
+        // Open Google's account-selection window.
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        // Find the approved student record linked to this account.
+        const studentQuery = query(
+            collection(db, "STUDENTS"),
+            where("authUid", "==", user.uid)
+        );
+
+        const studentSnapshot = await getDocs(studentQuery);
+
+        if (studentSnapshot.empty) {
+            await signOut(auth);
+
+            throw new Error(
+                "Your Gmail is not linked to an approved student account. Please contact the administrator."
+            );
+        }
+
+        const studentData = studentSnapshot.docs[0].data();
+
+        // Verify the account email matches the approved student record.
+        if (
+            !studentData.email ||
+            studentData.email.toLowerCase() !== user.email.toLowerCase()
+        ) {
+            await signOut(auth);
+
+            throw new Error(
+                "Your Gmail does not match the email linked to your student account."
+            );
+        }
+
+        message.style.color = "#2e7d32";
+        message.textContent =
+            "Google login successful! Opening your dashboard...";
+
+        window.location.href = "student-dashboard.html";
+
+    } catch (error) {
+        console.error("Google login error:", error);
+
+        if (error.code === "auth/popup-closed-by-user") {
+            message.textContent =
+                "Google sign-in was cancelled.";
+        } else if (error.code === "auth/popup-blocked") {
+            message.textContent =
+                "The Google sign-in window was blocked. Allow pop-ups and try again.";
+        } else if (
+            error.code === "auth/unauthorized-domain"
+        ) {
+            message.textContent =
+                "This website domain is not authorized in Firebase Authentication.";
+        } else {
+            message.textContent =
+                error.message || "Google sign-in failed. Please try again.";
+        }
+    } 
+    
+});
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
