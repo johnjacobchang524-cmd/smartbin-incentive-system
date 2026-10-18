@@ -4,7 +4,9 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
-  deleteUser
+  deleteUser,
+  signInWithPopup,
+  GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
@@ -57,6 +59,9 @@ export {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     onAuthStateChanged,
-    signOut,
-    deleteUser
+        signOut,
+    deleteUser,
+    signInWithPopup,
+    GoogleAuthProvider
+};
 };  
